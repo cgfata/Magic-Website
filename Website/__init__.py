@@ -41,14 +41,14 @@ MAGIC_Inventory_SSL_CA = os.path.abspath(file_path)
 print(MAGIC_Inventory_SSL_CA)
 
 
-#password = quote(MAGIC_INVENTORY_PASSWORD_S)
-password = quote(str(MAGIC_INVENTORY_PASSWORD_S))
+# #password = quote(MAGIC_INVENTORY_PASSWORD_S)
+# password = quote(str(MAGIC_INVENTORY_PASSWORD_S))
 
 
 db = SQLAlchemy()
 #DB_NAME = "mysql+pymysql://inventorybot:gio91030@localhost/testingdatabase"
 #DB_NAME = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD }@{MAGIC_INVENTORY_HOST}/{MAGIC_INVENTORY_DATABASE}'
-DB_NAME = f'mysql+pymysql://inventorybot:' + password + '@magicbotinventory.mysql.database.azure.com:3306/magicbotinventory?ssl=true'
+DB_NAME = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}?ssl=true'
 
 def create_app():
     app = Flask(__name__)
@@ -63,7 +63,7 @@ def create_app():
             "check_hostname": False
         }
     }
-    uri = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{password}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}?ssl=true'
+    uri = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}?ssl=true'
     uri_params = {"connect_args": ssl_args}
     app.config['SQLALCHEMY_DATABASE_URI'] = uri
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = uri_params
