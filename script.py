@@ -10,23 +10,31 @@ from flask_login import login_required, current_user
 from dotenv import load_dotenv
 from urllib.parse import quote
 
-load_dotenv()
-BOT_TOKEN = os.getenv('TOKEN')
-MAGIC_INVENTORY_HOST = os.getenv('HOST')
-MAGIC_INVENTORY_USER = os.getenv('USER')
-MAGIC_INVENTORY_PASSWORD = os.getenv('PASSWORD')
-MAGIC_INVENTORY_DATABASE = os.getenv('DATABASE')
-MAGIC_INVENTORY_PASSWORD_S = os.getenv('PASSWORD_AZURE')
-MAGIC_INVENTORY_HOST_AZURE = os.getenv('HOST_AZURE')
+# load_dotenv()
+# BOT_TOKEN = os.getenv('TOKEN')
+# MAGIC_INVENTORY_HOST = os.getenv('HOST')
+# MAGIC_INVENTORY_USER = os.getenv('USER')
+# MAGIC_INVENTORY_PASSWORD = os.getenv('PASSWORD')
+# MAGIC_INVENTORY_DATABASE = os.getenv('DATABASE')
+# MAGIC_INVENTORY_PASSWORD_S = os.getenv('PASSWORD_AZURE')
+# MAGIC_INVENTORY_HOST_AZURE = os.getenv('HOST_AZURE')
 
 
-db = mysql.connector.connect(
-    host=MAGIC_INVENTORY_HOST,
-    user=MAGIC_INVENTORY_USER,
-    passwd=MAGIC_INVENTORY_PASSWORD,
-    database=MAGIC_INVENTORY_DATABASE,
-    auth_plugin='mysql_native_password'
-)
+# db = mysql.connector.connect(
+#     host=MAGIC_INVENTORY_HOST,
+#     user=MAGIC_INVENTORY_USER,
+#     passwd=MAGIC_INVENTORY_PASSWORD,
+#     database=MAGIC_INVENTORY_DATABASE,
+#     auth_plugin='mysql_native_password'
+# )
+
+BOT_TOKEN = os.environ.get('TOKEN')
+MAGIC_INVENTORY_HOST = os.environ.get('HOST')
+MAGIC_INVENTORY_USER = os.environ.get('USER')
+MAGIC_INVENTORY_PASSWORD = os.environ.get('PASSWORD')
+MAGIC_INVENTORY_DATABASE = os.environ.get('DATABASE')
+MAGIC_INVENTORY_PASSWORD_S = os.environ.get('PASSWORD_AZURE')
+MAGIC_INVENTORY_HOST_AZURE = os.environ.get('HOST_AZURE')
 
 # get the directory containing the script file
 script_dir = os.path.dirname(os.path.abspath(__file__))
