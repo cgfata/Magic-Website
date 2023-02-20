@@ -14,6 +14,8 @@ MAGIC_INVENTORY_HOST = os.getenv('HOST')
 MAGIC_INVENTORY_USER = os.getenv('USER')
 MAGIC_INVENTORY_PASSWORD = os.getenv('PASSWORD')
 MAGIC_INVENTORY_DATABASE = os.getenv('DATABASE')
+MAGIC_INVENTORY_PASSWORD_S = os.getenv('PASSWORD@')
+MAGIC_INVENTORY_HOST_AZURE = os.getenv('HOST_AZURE')
 
 # get the directory containing the script file
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -31,7 +33,7 @@ MAGIC_Inventory_SSL_CA = os.path.abspath(file_path)
 print(MAGIC_Inventory_SSL_CA)
 
 
-password = quote('ODSTmw42@')
+password = quote(MAGIC_INVENTORY_PASSWORD_S)
 
 db = SQLAlchemy()
 #DB_NAME = "mysql+pymysql://inventorybot:gio91030@localhost/testingdatabase"
@@ -51,14 +53,7 @@ def create_app():
             "check_hostname": False
         }
     }
-    uri = (
-            "mysql+pymysql://"
-            "inventorybot:"
-            + password
-            + "@magicbotinventory.mysql.database.azure.com:3306/"
-              "magicbotinventory"
-              "?ssl=true"
-    )
+    uri = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{password}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}?ssl=true'
     uri_params = {"connect_args": ssl_args}
     app.config['SQLALCHEMY_DATABASE_URI'] = uri
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = uri_params

@@ -8,6 +8,7 @@ from pandas.io import sql
 from flask import flash
 from flask_login import login_required, current_user
 from dotenv import load_dotenv
+from urllib.parse import quote
 
 load_dotenv()
 BOT_TOKEN = os.getenv('TOKEN')
@@ -15,6 +16,8 @@ MAGIC_INVENTORY_HOST = os.getenv('HOST')
 MAGIC_INVENTORY_USER = os.getenv('USER')
 MAGIC_INVENTORY_PASSWORD = os.getenv('PASSWORD')
 MAGIC_INVENTORY_DATABASE = os.getenv('DATABASE')
+MAGIC_INVENTORY_PASSWORD_S = os.getenv('PASSWORD@')
+MAGIC_INVENTORY_HOST_AZURE = os.getenv('HOST_AZURE')
 
 
 db = mysql.connector.connect(
@@ -25,13 +28,45 @@ db = mysql.connector.connect(
     auth_plugin='mysql_native_password'
 )
 
+# get the directory containing the script file
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# get the current working directory
+cwd = os.getcwd()
+
+# construct the path to the target file relative to the current working directory
+file_path = os.path.join(cwd, "DigiCertGlobalRootCA.crt.pem")
+
+# print the absolute file path
+MAGIC_Inventory_SSL_CA = os.path.abspath(file_path)
+
+# print the absolute file path
+print(MAGIC_Inventory_SSL_CA)
+
+
+password = quote(MAGIC_INVENTORY_PASSWORD_S)
+
+# ssl_args = {
+#     "ssl": {
+#         "ca": "F:/Documents\Python Projects/flaskProject/DigiCertGlobalRootCA.crt.pem",
+#         #"ca": f'{MAGIC_Inventory_SSL_CA}',
+#         "check_hostname": False
+#     }
+# }
 
 def process_csv(filename):
-    alchDB = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD}@{MAGIC_INVENTORY_HOST}/{MAGIC_INVENTORY_DATABASE}'
+    #alchDB = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD}@{MAGIC_INVENTORY_HOST}/{MAGIC_INVENTORY_DATABASE}'
     #alchDB = "mysql+pymysql://inventorybot:gio91030@localhost/testingdatabase"
+    #alchDB =f'mysql+pymysql://inventorybot:{password}@magicbotinventory.mysql.database.azure.com:3306/magicbotinventory?ssl=true'
+    alchDB =(f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{password}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}'
+    f'?ssl_ca={MAGIC_Inventory_SSL_CA}')
+
+
     engine = create_engine(alchDB)
+    #engine = create_engine(alchDB,connect_args=ssl_args)
 
     SQL_Query = pd.read_sql_query('Select Name from cards', alchDB)
+
 
     df_Database = pd.DataFrame(SQL_Query, columns=['Name'])
 
