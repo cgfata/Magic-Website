@@ -41,7 +41,9 @@ MAGIC_Inventory_SSL_CA = os.path.abspath(file_path)
 print(MAGIC_Inventory_SSL_CA)
 
 
-password = quote(MAGIC_INVENTORY_PASSWORD_S)
+#password = quote(MAGIC_INVENTORY_PASSWORD_S)
+password = quote(str(MAGIC_INVENTORY_PASSWORD_S))
+
 
 db = SQLAlchemy()
 #DB_NAME = "mysql+pymysql://inventorybot:gio91030@localhost/testingdatabase"
