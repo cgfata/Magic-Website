@@ -28,7 +28,8 @@ def home():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             new_filename = f'{filename.split(".")[0]}_{int(time.time())}.csv'
-            savepath = "F:/Documents/Python Projects/flaskProject/Website/static/imports"
+            #savepath = "F:/Documents/Python Projects/flaskProject/Website/static/imports"
+            savepath = "app/Website/static/imports"
             save_location = os.path.join(savepath, new_filename)
             file.save(save_location)
             process_csv(save_location)
