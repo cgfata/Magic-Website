@@ -37,6 +37,8 @@ file_path = os.path.join(cwd, "DigiCertGlobalRootCA.crt.pem")
 # print the absolute file path
 MAGIC_Inventory_SSL_CA = os.path.abspath(file_path)
 
+#MAGIC_Inventory_SSL_CA = "flaskProject/certs/DigiCertGlobalRootCA.crt.pem"
+
 # print the absolute file path
 print(MAGIC_Inventory_SSL_CA)
 
@@ -48,7 +50,8 @@ print(MAGIC_Inventory_SSL_CA)
 db = SQLAlchemy()
 #DB_NAME = "mysql+pymysql://inventorybot:gio91030@localhost/testingdatabase"
 #DB_NAME = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD }@{MAGIC_INVENTORY_HOST}/{MAGIC_INVENTORY_DATABASE}'
-DB_NAME = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}?ssl=true'
+#DB_NAME = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}?ssl=true'
+DB_NAME = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}'
 
 def create_app():
     app = Flask(__name__)
@@ -56,17 +59,21 @@ def create_app():
     #app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://inventorybot:gio91030@localhost/testingdatabase'
     #app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD }@{MAGIC_INVENTORY_HOST}/{MAGIC_INVENTORY_DATABASE}'
-    ssl_args = {
-        "ssl": {
-            #"ca": "F:/Documents\Python Projects/flaskProject/DigiCertGlobalRootCA.crt.pem",
-            "ca": f'{MAGIC_Inventory_SSL_CA}',
-            "check_hostname": False
-        }
-    }
-    uri = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}?ssl=true'
-    uri_params = {"connect_args": ssl_args}
-    app.config['SQLALCHEMY_DATABASE_URI'] = uri
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = uri_params
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}'
+    #All this under is for SSL_CA
+    # ssl_args = {
+    #     "ssl": {
+    #         #"ca": "F:/Documents\Python Projects/flaskProject/DigiCertGlobalRootCA.crt.pem",
+    #         "ca": f'{MAGIC_Inventory_SSL_CA}',
+    #         "check_hostname": False
+    #     }
+    # }
+    # uri = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}?ssl=true'
+    # uri_params = {"connect_args": ssl_args}
+    # app.config['SQLALCHEMY_DATABASE_URI'] = uri
+    # app.config['SQLALCHEMY_ENGINE_OPTIONS'] = uri_params
+    #
+
     #app.config['MYSQL_USER'] = MAGIC_INVENTORY_USER
     #app.config['MYSQL_PASSWORD'] = MAGIC_INVENTORY_PASSWORD
     #app.config['MYSQL_HOST'] = MAGIC_INVENTORY_HOST

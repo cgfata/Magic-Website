@@ -48,8 +48,9 @@ file_path = os.path.join(cwd, "DigiCertGlobalRootCA.crt.pem")
 # print the absolute file path
 MAGIC_Inventory_SSL_CA = os.path.abspath(file_path)
 
+#MAGIC_Inventory_SSL_CA = "F:/Documents/Python Projects/flaskProject/certs/DigiCertGlobalRootCA.crt.pem"
 # print the absolute file path
-print(MAGIC_Inventory_SSL_CA)
+#print(MAGIC_Inventory_SSL_CA)
 
 
 #password = quote(MAGIC_INVENTORY_PASSWORD_S)
@@ -66,8 +67,10 @@ def process_csv(filename):
     #alchDB = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD}@{MAGIC_INVENTORY_HOST}/{MAGIC_INVENTORY_DATABASE}'
     #alchDB = "mysql+pymysql://inventorybot:gio91030@localhost/testingdatabase"
     #alchDB =f'mysql+pymysql://inventorybot:{password}@magicbotinventory.mysql.database.azure.com:3306/magicbotinventory?ssl=true'
-    alchDB =(f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}'
-    f'?ssl_ca={MAGIC_Inventory_SSL_CA}')
+    alchDB =f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}'
+    #This is for ssl_CA
+    #alchDB =(f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_S}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}'
+    #f'?ssl_ca={MAGIC_Inventory_SSL_CA}')
 
 
     engine = create_engine(alchDB)
