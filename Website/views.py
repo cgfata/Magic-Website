@@ -15,6 +15,16 @@ views = Blueprint('views', __name__)
 
 ALLOWED_EXTENSIONS = set(['csv'])
 
+def flushdir(dir):
+    now = time.time()
+    for f in os.listdir(dir):
+        fullpath = os.path.join(dir, f)
+        if os.stat(fullpath).st_mtime < (now - 60):
+            if os.path.isfile(fullpath):
+                os.remove(fullpath)
+            elif os.path.isdir(fullpath):
+                flushdir(fullpath)
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -33,6 +43,7 @@ def home():
             save_location = os.path.join(savepath, new_filename)
             file.save(save_location)
             process_csv(save_location)
+            flushdir(savepath)
     return render_template("home.html", user=current_user)
 
 
