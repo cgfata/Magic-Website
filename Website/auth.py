@@ -14,7 +14,8 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        user = User.query.filter_by(email=email).first()
+        #user = User.query.filter_by(email=email).first()
+        user = globals()['User'].query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
@@ -44,8 +45,10 @@ def sign_up():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
-        user = User.query.filter_by(email=email).first()
-        discorduser = User.query.filter_by(discordid=discordid).first()
+        #user = User.query.filter_by(email=email).first()
+        user = globals()['User'].query.filter_by(email=email).first()
+        #discorduser = User.query.filter_by(discordid=discordid).first()
+        discorduser = globals()['User'].query.filter_by(discordid=discordid).first()
         if user:
             flash('Email already exists.', category='error')
         elif len(email) < 4:
@@ -61,7 +64,9 @@ def sign_up():
         elif len(password1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, discordid=discordid, password=generate_password_hash(
+            # new_user = User(email=email, first_name=first_name, discordid=discordid, password=generate_password_hash(
+            #     password1, method='sha256'))
+            new_user = globals()['User'](email=email, first_name=first_name, discordid=discordid, password=generate_password_hash(
                 password1, method='sha256'))
             db.session.add(new_user)
             db.session.commit()

@@ -50,15 +50,19 @@ def home():
 @views.route('/api/data')
 def data():
     current_user_discordid = current_user.discordid
-    query = Inventory.query.filter_by(discordid=f'{current_user_discordid}')
+    #query = Inventory.query.filter_by(discordid=f'{current_user_discordid}')
+    query = globals()['Inventory'].query.filter_by(discordid=f'{current_user_discordid}')
 
     # search filter
     search = request.args.get('search')
     if search:
         query = query.filter(
-            Inventory.name.like(f'%{search}%'),
-            Inventory.edition.like(f'%{search}%'),
-            Inventory.foil.like(f'%{search}%')
+            # Inventory.name.like(f'%{search}%'),
+            # Inventory.edition.like(f'%{search}%'),
+            # Inventory.foil.like(f'%{search}%')
+            globals()['Inventory'].name.like(f'%{search}%'),
+            globals()['Inventory'].edition.like(f'%{search}%'),
+            globals()['Inventory'].foil.like(f'%{search}%')
         )
     total = query.count()
 
@@ -95,7 +99,8 @@ def update():
     data = request.get_json()
     if 'id' not in data:
         abort(400)
-    inventory = Inventory.query.get(data['id'])
+    #inventory = Inventory.query.get(data['id'])
+    inventory = globals()['Inventory'].query.get(data['id'])
     for field in ['count', 'name', 'edition', 'cardnumber', 'foil','discordid']:
         if field in data:
             setattr(inventory, field, data[field])
