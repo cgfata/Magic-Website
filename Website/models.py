@@ -5,13 +5,14 @@ from sqlalchemy.sql import func
 
 
 class Inventory(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     count = db.Column(db.Integer)
-    name = db.Column(db.String(255),nullable=False)
+    name = db.Column(db.String(255), nullable=False)
     edition = db.Column(db.String(255), nullable=False)
-    cardnumber = db.Column(db.String(255))
+    cardnumber = db.Column(db.Integer, nullable=False)
     foil = db.Column(db.String(4))
-    discordid = db.Column(db.String(255), db.ForeignKey('user.discordid'))
+    discordid = db.Column(db.String(255), db.ForeignKey('discorduser.discordid'))
+    discorduser = db.relationship("DiscordUser", back_populates="inventory")
 
     def to_dict(self):
         return {
