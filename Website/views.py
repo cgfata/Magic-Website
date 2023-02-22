@@ -56,10 +56,10 @@ def data():
     search = request.args.get('search')
     if search:
         query = query.filter(
-            Inventory.name.like(f'%{search}%'),
-            Inventory.edition.like(f'%{search}%'),
-            Inventory.foil.like(f'%{search}%')
-        )
+            Inventory.name.like(f'%{search}%')
+        #     Inventory.edition.like(f'%{search}%'),
+        #     Inventory.foil.like(f'%{search}%')
+         )
     total = query.count()
 
     # sorting
@@ -96,9 +96,28 @@ def update():
     if 'id' not in data:
         abort(400)
     inventory = Inventory.query.get(data['id'])
-    for field in ['count', 'name', 'edition', 'cardnumber', 'foil','discordid']:
+    if 'count' in data:
+        count = int(data['count'])
+        if count == 0:
+            db.session.delete(inventory)
+            db.session.commit()
+            return '', 204
+        else:
+            setattr(inventory, 'count', count)
+    for field in ['name', 'edition', 'cardnumber', 'foil','discordid']:
         if field in data:
             setattr(inventory, field, data[field])
     db.session.commit()
     return '', 204
 
+@views.route('/api/delete-all', methods=['DELETE'])
+def delete_all():
+    try:
+        Inventory.query.delete()
+        db.session.commit()
+        return '', 204
+    except:
+        db.session.rollback()
+        raise
+    finally:
+        db.session.close()

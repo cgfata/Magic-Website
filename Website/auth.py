@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .models import User
+from .models import User, Discorduser
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
@@ -46,6 +46,7 @@ def sign_up():
 
         user = User.query.filter_by(email=email).first()
         discorduser = User.query.filter_by(discordid=discordid).first()
+        botdiscordid = Discorduser.query.filter_by(discordid=discordid).first()
         if user:
             flash('Email already exists.', category='error')
         elif len(email) < 4:
@@ -56,6 +57,8 @@ def sign_up():
             flash('Discord ID is in use.', category='error')
         elif len(discordid) < 2:
             flash('Discord ID must be greater than 1 character.', category='error')
+        elif botdiscordid is None:
+            flash('Discord ID is not set up for the bot', category='error')
         elif password1 != password2:
             flash('Passwords don\'t match.', category='error')
         elif len(password1) < 7:

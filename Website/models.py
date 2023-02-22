@@ -11,7 +11,7 @@ class Inventory(db.Model):
     edition = db.Column(db.String(255), nullable=False)
     cardnumber = db.Column(db.String(255))
     foil = db.Column(db.String(4))
-    discordid = db.Column(db.String(255), db.ForeignKey('user.discordid'))
+    discordid = db.Column(db.String(255), db.ForeignKey('discorduser.discordid'),db.ForeignKey('user.discordid'))
 
     def to_dict(self):
         return {
@@ -31,4 +31,9 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     discordid = db.Column(db.String(255),unique=True)
     cards = db.relationship('Inventory')
+
+class Discorduser(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    discordid = db.Column(db.String(255), nullable=False, unique=True)
+    name = db.Column(db.String(255), nullable=False)
 

@@ -14,103 +14,152 @@
     </form>
 
     <table id="table"></table>
+    <button id="delete-all-btn">Delete All</button>
+<script>
+  const tableDiv = document.getElementById('table');
 
-   <script>
-      const tableDiv = document.getElementById('table');
+  const updateUrl = (prev, query) => {
+    return prev + (prev.indexOf('?') >= 0 ? '&' : '?') + new URLSearchParams(query).toString();
+  };
 
-      const updateUrl = (prev, query) => {
-        return prev + (prev.indexOf('?') >= 0 ? '&' : '?') + new URLSearchParams(query).toString();
-      };
+  const editableCellAttributes = (data, row, col) => {
+      if (row) {
+        return {contentEditable: 'true', 'data-element-id': row.cells[0].data};
+      }
+      else {
+        return {};
+      }
+  };
 
-      const editableCellAttributes = (data, row, col) => {
-          if (row) {
-            return {contentEditable: 'true', 'data-element-id': row.cells[0].data};
-          }
-          else {
-            return {};
-          }
-      };
+  const isPositiveInteger = (str) => /^\d+$/.test(str);
 
-      new gridjs.Grid({
-        columns: [
-          { id: 'id', 'hidden': true },
-          { id: 'count', name: 'Count', 'attributes': editableCellAttributes },
-          { id: 'name', name: 'Name' },
-          { id: 'edition', name: 'Edition' },
-          { id: 'cardnumber', name: 'Card Number', 'hidden': true },
-          { id: 'foil', name: 'Foil' },
-          {id:'discordid', name:'Discord ID', 'hidden': true }
-        ],
-        server: {
-          url: '/api/data',
-          then: results => results.data,
-          total: results => results.total,
+  new gridjs.Grid({
+    columns: [
+      { id: 'id', 'hidden': true },
+      { id: 'count', name: 'Count', 'attributes': editableCellAttributes },
+      { id: 'name', name: 'Name' },
+      { id: 'edition', name: 'Edition' },
+      { id: 'cardnumber', name: 'Card Number', 'hidden': true },
+      { id: 'foil', name: 'Foil' },
+      {id:'discordid', name:'Discord ID', 'hidden': true }
+    ],
+    server: {
+      url: '/api/data',
+      then: results => results.data,
+      total: results => results.total,
+    },
+    search: {
+      enabled: true,
+      server: {
+        url: (prev, search) => {
+          return updateUrl(prev, {search});
         },
-        search: {
-          enabled: true,
-          server: {
-            url: (prev, search) => {
-              return updateUrl(prev, {search});
-            },
-          },
+      },
+    },
+    sort: {
+      enabled: true,
+      multiColumn: true,
+      server: {
+        url: (prev, columns) => {
+          const columnIds = ['id','count', 'name', 'edition', 'cardnumber', 'foil','discordid'];
+          const sort = columns.map(col => (col.direction === 1 ? '+' : '-') + columnIds[col.index]);
+          return updateUrl(prev, {sort});
         },
-        sort: {
-          enabled: true,
-          multiColumn: true,
-          server: {
-            url: (prev, columns) => {
-              const columnIds = ['id','count', 'name', 'edition', 'cardnumber', 'foil','discordid'];
-              const sort = columns.map(col => (col.direction === 1 ? '+' : '-') + columnIds[col.index]);
-              return updateUrl(prev, {sort});
-            },
-          },
+      },
+    },
+    pagination: {
+      enabled: true,
+      server: {
+        url: (prev, page, limit) => {
+          return updateUrl(prev, {start: page * limit, length: limit});
         },
-        pagination: {
-          enabled: true,
-          server: {
-            url: (prev, page, limit) => {
-              return updateUrl(prev, {start: page * limit, length: limit});
-            },
-          },
-        },
-      }).render(tableDiv);
+      },
+    },
+  }).render(tableDiv);
 
-      let savedValue;
+  let savedValue;
 
-      tableDiv.addEventListener('focusin', ev => {
-        if (ev.target.tagName === 'TD') {
-          savedValue = ev.target.textContent;
-        }
-      });
+  tableDiv.addEventListener('focusin', ev => {
+    if (ev.target.tagName === 'TD') {
+      savedValue = ev.target.textContent;
+    }
+  });
 
-      tableDiv.addEventListener('focusout', ev => {
-        if (ev.target.tagName === 'TD') {
-          if (savedValue !== ev.target.textContent) {
+  tableDiv.addEventListener('focusout', ev => {
+    if (ev.target.tagName === 'TD') {
+      if (savedValue !== ev.target.textContent) {
+        if (ev.target.dataset.columnId === 'count') {
+          const newCount = ev.target.textContent.trim();
+          if (isPositiveInteger(newCount)) {
             fetch('/api/data', {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({
                 id: ev.target.dataset.elementId,
-                [ev.target.dataset.columnId]: ev.target.textContent
+                count: newCount
               }),
             });
-          }
-          savedValue = undefined;
-        }
-      });
-
-      tableDiv.addEventListener('keydown', ev => {
-        if (ev.target.tagName === 'TD') {
-          if (ev.key === 'Escape') {
+          } else if (newCount === '0') {
+            fetch('/api/data', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({
+                id: ev.target.dataset.elementId,
+              }),
+            });
+          } else {
             ev.target.textContent = savedValue;
-            ev.target.blur();
           }
-          else if (ev.key === 'Enter') {
-            ev.preventDefault();
-            ev.target.blur();
-          }
+        } else {
+          fetch('/api/data', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              id: ev.target.dataset.elementId,
+              [ev.target.dataset.columnId]: ev.target.textContent
+            }),
+          });
         }
+      }
+
+      savedValue = undefined;
+    }
+  });
+
+  tableDiv.addEventListener('keydown', ev => {
+    if (ev.target.tagName === 'TD') {
+      if (ev.key === 'Escape') {
+        ev.target.textContent = savedValue;
+        ev.target.blur();
+      }
+      else if (ev.key === 'Enter') {
+        ev.preventDefault();
+        ev.target.blur();
+      }
+    }
+  });
+</script>
+
+<script>
+    const deleteAllBtn = document.getElementById('delete-all-btn');
+deleteAllBtn.addEventListener('click', async () => {
+  const confirmDelete = confirm('Are you sure you want to delete all entries? This action cannot be undone.');
+  if (confirmDelete) {
+    try {
+      const response = await fetch('/api/delete-all', {
+        method: 'DELETE',
       });
-    </script>
+      if (response.ok) {
+        location.reload();
+      } else {
+        throw new Error('Failed to delete all entries');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete all entries');
+    }
+  }
+});
+</script>
 
 {% endblock %}
