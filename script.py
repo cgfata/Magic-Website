@@ -65,7 +65,7 @@ MAGIC_Inventory_SSL_CA = os.path.abspath(file_path)
 
 def process_csv(filename):
     #alchDB = f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD}@{MAGIC_INVENTORY_HOST}/{MAGIC_INVENTORY_DATABASE}'
-    #alchDB = "mysql+pymysql://inventorybot:gio91030@localhost/testingdatabase"
+    #alchDB = "mysql+pymysql://inventorybot:XXXXX@localhost/testingdatabase"
     #alchDB =f'mysql+pymysql://inventorybot:{password}@magicbotinventory.mysql.database.azure.com:3306/magicbotinventory?ssl=true'
     alchDB =f'mysql+pymysql://{MAGIC_INVENTORY_USER}:{MAGIC_INVENTORY_PASSWORD_AZURE}@{MAGIC_INVENTORY_HOST_AZURE}:3306/{MAGIC_INVENTORY_DATABASE}'
     #This is for ssl_CA
